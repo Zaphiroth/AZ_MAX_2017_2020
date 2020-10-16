@@ -9,7 +9,11 @@
 ##---- Readin raw data ----
 az.max.raw <- read.csv('02_Inputs/AZ_MAX_201701-202006.csv', encoding = 'UTF-8')
 mapping.raw <- read.xlsx('02_Inputs/az+sanofi_待清洗测试版20200211.xlsx', sheet = 5)
+
 ims.chpa <- read.xlsx('02_Inputs/ims_chpa_to20Q2.xlsx', startRow = 4, cols = 1:21)
+
+az.chc <- read_excel('02_Inputs/AZ_CHC_2017Q1_2020Q2_20200916.xlsx')
+
 
 ##---- Cleaning ----
 # packid.mapping <- ims.chpa %>% 
@@ -51,8 +55,12 @@ az.max.price <- az.max.raw %>%
 write.csv(az.max.price, '03_Outputs/AZ_MAX_Price.csv')
 
 
+##---- AZ CHC ----
+az.chc.price <- az.max.price %>% 
+  mutate(City = gsub('市', '', City)) %>% 
+  filter(City %in% unique(az.chc$City_C), 
+         Pack_ID %in% unique(az.chc$Pack_ID))
 
-
-
+write.xlsx(az.chc.price, '03_Outputs/AZ_CHC_MAX_Price.xlsx')
 
 
